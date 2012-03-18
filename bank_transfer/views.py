@@ -1,12 +1,12 @@
 """Simple wrapper for standard checkout as implemented in satchmo.payment.views"""
 
-from satchmo.configuration import config_get_group
-from satchmo.payment.views import confirm, payship
+from livesettings import config_get_group
+from payment.views import confirm, payship
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from satchmo.shop.views.utils import bad_or_missing
-from satchmo.shop.models import Order
+from satchmo_utils.views import bad_or_missing
+from satchmo_store.shop.models import Order
 
 payment_module = config_get_group('PAYMENT_BANK_TRANSFER')    
 #bank_transfer = config_get_group('PAYMENT_BANK_TRANSFER')
