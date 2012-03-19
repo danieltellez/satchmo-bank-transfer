@@ -68,6 +68,12 @@ config_register_list(
         description=_("Other Informations, shown on email confirm and success page."),
         hidden=False,
         default = ''),              
+    
+    BooleanValue(PAYMENT_GROUP,
+        'EXTRA_LOGGING',
+        description=_("Verbose logs"),
+        help_text=_("Add extensive logs during post."),
+        default=False)
 
 #    BooleanValue(PAYMENT_GROUP, 
 #        'SSL', 

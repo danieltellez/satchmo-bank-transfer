@@ -1,31 +1,25 @@
-"""
-This is a stub and used as the default processor.
-It doesn't do anything but it can be used to build out another
-interface.
-
-See the authorizenet module for the reference implementation
-"""
 from django.utils.translation import ugettext as _
 from payment.modules.base import BasePaymentProcessor, ProcessorResult
 
 class PaymentProcessor(BasePaymentProcessor):
-
+    """
+    Bank transfer payment processing module
+    """
     def __init__(self, settings):
         self.settings = settings
+        super(PaymentProcessor, self).__init__('bank_transfer', settings)
 
     def prepareData(self, order):
         self.order = order
 
-    def process(self, testing=False, amount=None):
+    def capture_payment(self, testing=False, order=None, amount=None):
         """
-        Process the transaction and return a tuple:
-            (success/failure, reason code, response text)
+        Process the transaction and return a ProcessorResult
         """
-        
-        orderpayment = self.record_payment(self.order, self.settings, amount=self.order.balance)
+        if order:
+            self.prepareData(order)
+        else:
+            order = self.order
 
-        reason_code = "0"
-        response_text = _("Success")
-
-        return (True, reason_code, response_text)
-
+        orderpayment = self.record_payment(amount=self.order.balance, reason_code="0")
+        return ProcessorResult(self.key, True, _("Success"), orderpayment)
