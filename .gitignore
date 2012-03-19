@@ -1,0 +1,16 @@
+*.pyc
+*.pyo
+*~
+*.swp
+local_settings.py
+.ropeproject
+.installed.cfg
+bin
+develop-eggs
+dist
+downloads
+eggs
+etc
+parts
+src/*.egg-info
+var
