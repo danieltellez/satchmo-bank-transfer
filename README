@@ -1,3 +1,6 @@
+This is a fork from the original satchmo-bank-transfer by aronchi (https://github.com/aronchi/satchmo-bank-transfer), and merged with some good ideas from gz (https://github.com/gz/satchmo-bank-transfer).
+I've added some other changes to make it work and place all the needed resources in one place.
+
 # How it works
 
 It sends an email with your store bank IBAN and SWIFT code to the customer.
@@ -6,12 +9,11 @@ It sends an email with your store bank IBAN and SWIFT code to the customer.
 
 1) Copy the source to your project_dir/payment/modules/bank_transfer
 
-2) add the module to your local_settings.py:
-   'CUSTOM_PAYMENT_MODULES' : [PROJECTNAME + '.payment.modules.bank_transfer',],
+2) Customize and move templates where you want
 
-3) Configure it in your http://www.store.com/settings
+2) Configure it in your http://www.store.com/settings
 
-4) Change the email template "order_complete.txt" to add your data
+4) Other proposal for "order_complete.txt" by aronchi (https://github.com/aronchi/satchmo-bank-transfer):
 
 {% trans "Payment" %}
 --------------------------------------

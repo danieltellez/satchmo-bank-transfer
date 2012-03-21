@@ -1,0 +1,47 @@
+{% load i18n satchmo_currency satchmo_order config_get %}
+
+{% block salutation %}{% with order.contact.first_name as first_name %}{% with order.contact.last_name as last_name %}{% blocktrans %}Dear {{ first_name }} {{ last_name }},{% endblocktrans %}{% endwith %}{% endwith %}{% endblock %}
+
+{% blocktrans %}Thank you for ordering with {{ shop_name }}.{% endblocktrans %}
+
+{% trans "Your order is summarized below:" %}
+
+{% block order_details %}{% include "shop/email/_order_detail.txt" %}{% endblock order_details %}{% comment %}
+    Whitespace for readibility. Hidden, so that we only have two newlines before
+    the next block.
+{% endcomment %}
+{% block order_details_payment %}{% trans "Payment" %}
+-------
+{% for p in order.payments.all %}{% ifnotequal p.amount 0 %}
+{% trans "Payment Method" %}: {{ p.payment }} - {{ p.amount|currency }}
+({{ p.time_stamp|date:"d-m-Y H:i" }})
+{% if p.payment == "BANK_TRANSFER" %}
+  {% trans "The order will hold until we'll receive bank confirmation of the money transfer. " %}
+  {% trans "Send the total payment amount to this bank account:" %}
+
+  {% bank_info for order as pinfo %}
+  {% trans "Account owner" %} : {{ pinfo.OWNER }}
+  {% trans "IBAN" %}: {{ pinfo.IBAN }}
+  {% trans "SWIFT" %}: {{ pinfo.SWIFT }}
+  {% trans "Total" %}: {{p.amount|currency}}
+
+  {{ p.getPaymentMethodConfig.INFORMATIONS|safe }}
+{% else %}
+{% with order.credit_card.credit_type as credit_card_type %}{% with order.credit_card.display_cc as credit_card_number %}{% with order.total|currency as order_total %}
+{% block order_details_payment_body %}{% if credit_card_number %}{% blocktrans %}Your {{ credit_card_type }} card ending in {{ credit_card_number }} will be charged {{ order_total }}.{% endblocktrans %}{% else %}{% blocktrans %}This order will be charged on your account for {{ order_total }}.{% endblocktrans %}{% endif %}{% endblock order_details_payment_body %}{% endwith %}{% endwith %}{% endwith %}
+{% endif %}
+{% endifnotequal %}
+{% endfor %}
+{% endblock order_details_payment %}
+
+{% if order.has_downloads %}
+{% trans "Your order contains products that can be downloaded" %}
+{% trans "Please click the link to begin the download" %}
+{% for download in order.downloadlink_set.all %}
+{{ download.product_name }}: {{download.get_full_url}}
+{% endfor %}
+{% endif %}
+
+{% block valediction %}{% trans "Regards" %},
+
+{% trans "Store Management" %}{% endblock%}
